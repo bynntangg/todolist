@@ -9,7 +9,7 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todos = Todo::orderBy('prioritas', 'desc')->get();
+        $todos = Todo::orderBy('created_at', 'desc')->get();
         return view('todos.index', compact('todos'));
     }
 
@@ -17,47 +17,40 @@ class TodoController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'prioritas' => 'required|integer|min:1|max:5',
+            'prioritas' => 'required|in:Rendah,Sedang,Tinggi',
         ]);
 
-        Todo::create([
-            'name' => $request->name,
-            'prioritas' => $request->prioritas,
-            'status' => false,
-        ]);
+        Todo::create($request->only('name', 'prioritas'));
 
         return redirect()->route('todos.index');
     }
 
-    public function update(Request $request, Todo $todo)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'prioritas' => 'required|integer|min:1|max:5',
+            'prioritas' => 'required|in:Rendah,Sedang,Tinggi',
         ]);
 
-        $todo->update([
-            'name' => $request->name,
-            'prioritas' => $request->prioritas,
-        ]);
+        $todo = Todo::findOrFail($id);
+        $todo->update($request->only('name', 'prioritas'));
 
         return redirect()->route('todos.index');
     }
 
-    public function toggleStatus(Todo $todo)
+    public function toggleStatus($id)
     {
-        $newStatus = !$todo->status;
-        $todo->update([
-            'status' => $newStatus,
-            'tanggal_diceklis' => $newStatus ? now() : null,
-        ]);
+        $todo = Todo::findOrFail($id);
+        $todo->status = !$todo->status;
+        $todo->tanggal_diceklis = $todo->status ? now() : null;
+        $todo->save();
 
         return redirect()->route('todos.index');
     }
 
-    public function destroy(Todo $todo)
+    public function destroy($id)
     {
-        $todo->delete();
+        Todo::findOrFail($id)->delete();
         return redirect()->route('todos.index');
     }
 }

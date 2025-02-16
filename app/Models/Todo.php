@@ -9,7 +9,7 @@ class Todo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'status', 'prioritas', 'tanggal_dibuat', 'tanggal_diceklis'];
+    protected $fillable = ['name', 'status', 'prioritas', 'tanggal_diceklis'];
     
     protected $casts = [
         'tanggal_diceklis' => 'datetime',

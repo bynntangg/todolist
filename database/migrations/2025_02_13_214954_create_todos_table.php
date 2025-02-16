@@ -14,12 +14,11 @@ return new class extends Migration
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('status')->default(false); // false = belum selesai, true = selesai
-            $table->integer('prioritas')->default(1); // 1-5
-            $table->timestamp('tanggal_dibuat')->useCurrent();
+            $table->boolean('status')->default(false);
+            $table->enum('prioritas', ['Rendah', 'Sedang', 'Tinggi'])->default('Rendah');
             $table->timestamp('tanggal_diceklis')->nullable();
             $table->timestamps();
-        });
+        }); 
     }
 
     /**
